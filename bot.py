@@ -10,7 +10,7 @@ from telegram.ext import (
 )
 
 
-TOKEN = os.environ["8991637065:AAGgwgU8irb08L4LcAujjLh76zsSkOTFZnE"]
+TOKEN = os.environ["Bot_token"]
 
 MENU = [
     ["👉 របៀប Deposit"],
