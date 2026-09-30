@@ -14,24 +14,38 @@ from telegram.request import HTTPXRequest
 # =========================================================
 # BOT TOKEN
 # =========================================================
-# Render Environment Variable:
-# BOT_TOKEN = your Telegram Bot Token
 TOKEN = os.environ["BOT_TOKEN"]
+
+
+# =========================================================
+# VIDEO FILE IDs
+# =========================================================
+
+# How to Register video
+REGISTER_VIDEO_ID = (
+    "BAACAgUAAxkBAAM4arx3ykJH145MNCaXeLBGGfMhCVMAAqcg"
+    "AAKwiKlUsUs0MN9Tx2g9BA"
+)
+
+# Add the other video File IDs here later
+DEPOSIT_VIDEO_ID = None
+WITHDRAWAL_VIDEO_ID = None
+MT5_VIDEO_ID = None
 
 
 # =========================================================
 # MENU
 # =========================================================
 MENU = [
-    ["👉 របៀប Deposit"],
-    ["👉 របៀប Withdraw"],
-    ["👉 របៀបបញ្ចូល USD Wallet នៅ MT5/MT4"],
-    ["👉 របៀបបញ្ចូលគណនី ID MT5/MT4"],
+    ["How to Register"],
+    ["How to deposit"],
+    ["How to Withdrawal"],
+    ["How to create MT5 Account"],
 ]
 
 
 # =========================================================
-# START COMMAND
+# /start
 # =========================================================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -42,26 +56,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         "សូមស្វាគមន៍មកកាន់ LX Cambodia 🇰🇭\n\n"
-        "សូមជ្រើសរើស Menu ខាងក្រោម៖",
+        "Please select a menu:",
         reply_markup=keyboard
     )
-
-
-# =========================================================
-# VIDEO FILE ID
-# =========================================================
-async def get_video_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    if update.message and update.message.video:
-
-        file_id = update.message.video.file_id
-
-        await update.message.reply_text(
-            "✅ Video received!\n\n"
-            "📌 Video File ID:\n\n"
-            f"{file_id}\n\n"
-            "Copy this File ID and keep it safe."
-        )
 
 
 # =========================================================
@@ -71,45 +68,84 @@ async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = update.message.text
 
-    # -----------------------------------------------------
-    # DEPOSIT
-    # -----------------------------------------------------
-    if text == "👉 របៀប Deposit":
+    # =====================================================
+    # HOW TO REGISTER
+    # =====================================================
+    if text == "How to Register":
 
-        await update.message.reply_text(
-            "💰 Deposit\n\n"
-            "សូមបញ្ចូលចំនួនទឹកប្រាក់ដែលអ្នកចង់ Deposit។"
+        await update.message.reply_video(
+            video=REGISTER_VIDEO_ID,
+            caption=(
+                "📱 How to Register\n\n"
+                "Please watch the video above."
+            )
         )
 
-    # -----------------------------------------------------
-    # WITHDRAW
-    # -----------------------------------------------------
-    elif text == "👉 របៀប Withdraw":
+    # =====================================================
+    # HOW TO DEPOSIT
+    # =====================================================
+    elif text == "How to deposit":
 
-        await update.message.reply_text(
-            "💸 Withdraw\n\n"
-            "សូមបញ្ចូលចំនួនទឹកប្រាក់ដែលអ្នកចង់ Withdraw។"
-        )
+        if DEPOSIT_VIDEO_ID:
 
-    # -----------------------------------------------------
-    # USD WALLET
-    # -----------------------------------------------------
-    elif text == "👉 របៀបបញ្ចូល USD Wallet នៅ MT5/MT4":
+            await update.message.reply_video(
+                video=DEPOSIT_VIDEO_ID,
+                caption=(
+                    "💰 How to deposit\n\n"
+                    "Please watch the video above."
+                )
+            )
 
-        await update.message.reply_text(
-            "💵 USD Wallet MT5/MT4\n\n"
-            "សូមបញ្ចូល USD Wallet របស់អ្នក។"
-        )
+        else:
 
-    # -----------------------------------------------------
-    # MT5 / MT4 ACCOUNT ID
-    # -----------------------------------------------------
-    elif text == "👉 របៀបបញ្ចូលគណនី ID MT5/MT4":
+            await update.message.reply_text(
+                "💰 How to deposit\n\n"
+                "Deposit video will be available soon."
+            )
 
-        await update.message.reply_text(
-            "👤 MT5/MT4 Account ID\n\n"
-            "សូមបញ្ចូល Account ID របស់អ្នក។"
-        )
+    # =====================================================
+    # HOW TO WITHDRAWAL
+    # =====================================================
+    elif text == "How to Withdrawal":
+
+        if WITHDRAWAL_VIDEO_ID:
+
+            await update.message.reply_video(
+                video=WITHDRAWAL_VIDEO_ID,
+                caption=(
+                    "💸 How to Withdrawal\n\n"
+                    "Please watch the video above."
+                )
+            )
+
+        else:
+
+            await update.message.reply_text(
+                "💸 How to Withdrawal\n\n"
+                "Withdrawal video will be available soon."
+            )
+
+    # =====================================================
+    # HOW TO CREATE MT5 ACCOUNT
+    # =====================================================
+    elif text == "How to create MT5 Account":
+
+        if MT5_VIDEO_ID:
+
+            await update.message.reply_video(
+                video=MT5_VIDEO_ID,
+                caption=(
+                    "👤 How to create MT5 Account\n\n"
+                    "Please watch the video above."
+                )
+            )
+
+        else:
+
+            await update.message.reply_text(
+                "👤 How to create MT5 Account\n\n"
+                "MT5 Account video will be available soon."
+            )
 
 
 # =========================================================
@@ -117,16 +153,12 @@ async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # =========================================================
 def main():
 
-    # -----------------------------------------------------
-    # RENDER PORT
-    # -----------------------------------------------------
+    # Render PORT
     port = int(
         os.environ.get("PORT", "10000")
     )
 
-    # -----------------------------------------------------
-    # RENDER PUBLIC URL
-    # -----------------------------------------------------
+    # Render public URL
     render_url = os.environ.get(
         "RENDER_EXTERNAL_URL"
     )
@@ -138,9 +170,9 @@ def main():
             "This bot is configured for Render."
         )
 
-    # -----------------------------------------------------
+    # =====================================================
     # TELEGRAM HTTP REQUEST
-    # -----------------------------------------------------
+    # =====================================================
     request = HTTPXRequest(
         connect_timeout=60,
         read_timeout=60,
@@ -148,9 +180,9 @@ def main():
         pool_timeout=60,
     )
 
-    # -----------------------------------------------------
+    # =====================================================
     # CREATE APPLICATION
-    # -----------------------------------------------------
+    # =====================================================
     app = (
         Application.builder()
         .token(TOKEN)
@@ -170,16 +202,7 @@ def main():
         )
     )
 
-    # Video handler
-    # Sending a video to the bot will return its File ID.
-    app.add_handler(
-        MessageHandler(
-            filters.VIDEO,
-            get_video_id
-        )
-    )
-
-    # Text / menu handler
+    # Menu buttons
     app.add_handler(
         MessageHandler(
             filters.TEXT & ~filters.COMMAND,
@@ -187,9 +210,9 @@ def main():
         )
     )
 
-    # -----------------------------------------------------
-    # START MESSAGE
-    # -----------------------------------------------------
+    # =====================================================
+    # START WEBHOOK
+    # =====================================================
     print("========================================")
     print("LX Cambodia Telegram Bot")
     print("Bot is starting with webhook...")
@@ -197,9 +220,6 @@ def main():
     print(f"Webhook: {render_url}/telegram")
     print("========================================")
 
-    # -----------------------------------------------------
-    # START WEBHOOK
-    # -----------------------------------------------------
     app.run_webhook(
         listen="0.0.0.0",
         port=port,
@@ -210,7 +230,7 @@ def main():
 
 
 # =========================================================
-# RUN BOT
+# RUN
 # =========================================================
 if __name__ == "__main__":
     main()
